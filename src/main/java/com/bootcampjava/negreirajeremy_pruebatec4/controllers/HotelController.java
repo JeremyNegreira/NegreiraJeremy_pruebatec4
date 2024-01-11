@@ -35,7 +35,7 @@ public class HotelController {
         }
     }
 
-    // User Story Nº 2
+// User Story Nº 2
     /**
      * Obtiene la lista de hoteles disponibles según las fechas y destino
      * proporcionados.
@@ -61,7 +61,7 @@ public class HotelController {
         }
     }
 
-    // User Story Nº 7
+// User Story Nº 7
     /**
      * Crea un nuevo hotel.
      *
@@ -133,5 +133,4 @@ public class HotelController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
-
 }

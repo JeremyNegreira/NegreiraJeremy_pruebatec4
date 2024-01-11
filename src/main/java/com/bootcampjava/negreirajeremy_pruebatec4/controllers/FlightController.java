@@ -17,6 +17,12 @@ public class FlightController {
     private IFlightService flightService;
 
     // User Story Nº 4
+    /**
+     * Obtiene la lista de todos los vuelos.
+     *
+     * @return ResponseEntity con la lista de vuelos y el código de estado
+     * correspondiente.
+     */
     @GetMapping
     public ResponseEntity<List<Flight>> getAllFlights() {
         List<Flight> flights = flightService.getAllFlights();

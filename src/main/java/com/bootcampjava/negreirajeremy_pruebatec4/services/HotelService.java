@@ -22,6 +22,11 @@ public class HotelService implements IHotelService {
     @Autowired
     private HotelBookingRepository hotelBookingRepository;
 
+    /**
+     * Obtiene la lista de todos los hoteles.
+     *
+     * @return Lista de DTOs de hoteles.
+     */
     @Override
     public List<HotelDTO> getAllHotels() {
         return hotelRepository.findByDeletedAtIsNull()
@@ -30,6 +35,15 @@ public class HotelService implements IHotelService {
                 .toList();
     }
 
+    /**
+     * Obtiene la lista de hoteles disponibles según las fechas y destino
+     * proporcionados.
+     *
+     * @param dateFrom Fecha de inicio para la búsqueda.
+     * @param dateTo Fecha de fin para la búsqueda.
+     * @param destination Destino de los hoteles buscados.
+     * @return Lista de DTOs de hoteles disponibles.
+     */
     @Override
     public List<HotelDTO> getAvailableHotels(LocalDate dateFrom, LocalDate dateTo, String destination) {
         return hotelRepository.findAvailableHotels(dateFrom, dateTo, destination)
@@ -38,6 +52,12 @@ public class HotelService implements IHotelService {
                 .toList();
     }
 
+    /**
+     * Realiza la reserva de un hotel y devuelve el monto total de la reserva.
+     *
+     * @param bookingRequest DTO con la información de la reserva.
+     * @return Monto total de la reserva.
+     */
     @Override
     public Double bookHotel(HotelBookingRequestDTO bookingRequest) {
         Optional<Hotel> hotelRequested = hotelRepository.findByHotelCodeAndDeletedAtIsNull(bookingRequest.getHotelCode());
@@ -49,10 +69,15 @@ public class HotelService implements IHotelService {
         HotelBooking booking = new HotelBooking(bookingRequest.getDateFrom(), bookingRequest.getDateTo(), hotel, bookingRequest.getHosts());
         hotelBookingRepository.save(booking);
 
-        Double totalAmount = hotel.getPrice() * bookingRequest.getPeopleQ();
-        return totalAmount;
+        return hotel.getPrice() * bookingRequest.getPeopleQ();
     }
 
+    /**
+     * Crea un nuevo hotel.
+     *
+     * @param hotelDTO DTO del hotel a crear.
+     * @return DTO del hotel creado.
+     */
     @Override
     public HotelDTO createHotel(HotelDTO hotelDTO) {
         Hotel hotel = new Hotel(hotelDTO.getHotelCode(),
@@ -65,6 +90,13 @@ public class HotelService implements IHotelService {
         return mapHotelToHotelDTO(hotel);
     }
 
+    /**
+     * Edita la información de un hotel existente.
+     *
+     * @param id Identificador del hotel a editar.
+     * @param hotelDTO DTO del hotel con la información actualizada.
+     * @return DTO del hotel actualizado.
+     */
     @Override
     public HotelDTO editHotel(Long id, HotelDTO hotelDTO) {
         Optional<Hotel> optionalExistingHotel = hotelRepository.findByIdAndDeletedAtIsNull(id);
@@ -90,6 +122,12 @@ public class HotelService implements IHotelService {
         }
     }
 
+    /**
+     * Elimina un hotel existente.
+     *
+     * @param id Identificador del hotel a eliminar.
+     * @return DTO del hotel eliminado.
+     */
     @Override
     public HotelDTO deleteHotel(Long id) {
         Optional<Hotel> optionalHotel = hotelRepository.findById(id);
@@ -101,6 +139,12 @@ public class HotelService implements IHotelService {
         return optionalHotel.isPresent() ? mapHotelToHotelDTO(optionalHotel.get()) : null;
     }
 
+    /**
+     * Obtiene la información de un hotel por su identificador.
+     *
+     * @param id Identificador del hotel.
+     * @return DTO del hotel.
+     */
     @Override
     public HotelDTO getHotelById(Long id) {
         Optional<Hotel> hotel = hotelRepository.findByIdAndDeletedAtIsNull(id);
@@ -110,8 +154,8 @@ public class HotelService implements IHotelService {
     /**
      * Mapea los Hotel a HotelDTO para el endpoint.
      *
-     * @param hotel
-     * @return hotelDTO
+     * @param hotel Hotel a mapear.
+     * @return DTO del hotel mapeado.
      */
     private HotelDTO mapHotelToHotelDTO(Hotel hotel) {
         return new HotelDTO(
@@ -124,4 +168,5 @@ public class HotelService implements IHotelService {
                 hotel.getDisponibilityDateTo(),
                 hotelBookingRepository.existsByHotelHotelCode(hotel.getHotelCode()));
     }
+
 }
